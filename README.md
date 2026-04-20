@@ -1,3 +1,6 @@
+This fork just moves the ollama models off device
+
+
 # Be More Agent 🤖
 **A Customizable, Offline-First AI Agent for Raspberry Pi**
 
