@@ -61,6 +61,31 @@ be-more-agent/
 
 ## 🚀 Installation
 
+
+## R36S setup (What I Did)
+I have a clone, so I am not sure it will be the same.
+* **To keep all your stuff:** use a second sd unless you want to wipe everything and intall a fresh OS.
+* **This will completley wipe the sd card you are using**
+
+1. ssh into your device by enabling remote services (may be some extra steps to get ssh working). the default user:ark and password:ark
+2. find your sd card and reformat it to ext4 so linux can have a nice and easy time:
+    ```bash
+    df -h
+    ```
+    * make sure to find the right one (mine was /dev/mmcblk2p1) 
+   ```bash
+   sudo umount /[your card directory]
+   sudo mkfs.ext4 /dev/mmcblk2p1  #this wipes and reformates it
+   sudo e2label /dev/mmcblk2p1 EASYROMS  #optional but gives arkOS a better time handling the card
+   sudo mount /dev/mmcblk2p1 /roms
+   df -h #just to check if it worked correctly, if you see it its good
+   sudo chown -R ark:ark /roms
+   cd /roms
+   mkdir bmoTing
+   cd bmoTing
+    ```
+what follows should be the same as long as you are running some linux system.
+
 ### 1. Prerequisites
 Ensure your Raspberry Pi OS is up to date.
 ```bash
@@ -180,3 +205,6 @@ This repository and the associated voice model are a non-commercial, open-source
 
 Voice Model Attribution
 The text-to-speech capabilities of this project are powered by Piper. The custom voice model was fine-tuned locally using Piper's base "Amy" model (en_US-amy-medium). The original Piper engine and base models are developed by the Rhasspy project and distributed under the MIT License.
+   
+  
+  
