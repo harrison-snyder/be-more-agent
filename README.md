@@ -74,7 +74,7 @@ I have a clone, so I am not sure it will be the same.
     ```
     * make sure to find the right one (mine was /dev/mmcblk2p1) 
    ```bash
-   sudo umount /[your card directory]
+   sudo umount /dev/mmcblk2p1  #or your card directory if different
    sudo mkfs.ext4 /dev/mmcblk2p1  #this wipes and reformates it
    sudo e2label /dev/mmcblk2p1 EASYROMS  #optional but gives arkOS a better time handling the card
    sudo mount /dev/mmcblk2p1 /roms
