@@ -70,6 +70,7 @@ sudo apt install git -y
 
 ### 2. Install Ollama
 This agent relies on [Ollama](https://ollama.com) to run the brain.
+Do this on whatever computer/server you want to run the ai
 ```bash
 curl -fsSL https://ollama.com/install.sh| sh
 ```
