@@ -43,6 +43,9 @@ import openwakeword
 from openwakeword.model import Model
 import ollama 
 
+#for .env
+from dotenv import load_dotenv
+
 # --- WEB SEARCH (Using your working import) ---
 from duckduckgo_search import DDGS 
 
@@ -59,10 +62,15 @@ WAKE_WORD_THRESHOLD = 0.5
 # HARDWARE SETTINGS
 INPUT_DEVICE_NAME = None
 
+remote_ip = os.getenv("OLLAMA_REMOTE_IP", "127.0.0.1")
+ollama_host = f"http://{remote_ip}:11434"
+
+
 DEFAULT_CONFIG = {
     "text_model": "gemma3:1b",
     "vision_model": "moondream",
     "voice_model": "piper/en_GB-semaine-medium.onnx",
+    "host": ollama_host,
     "chat_memory": True,
     "camera_rotation": 0,
     "system_prompt_extras": "",
@@ -93,6 +101,8 @@ def load_config():
 CURRENT_CONFIG = load_config()
 TEXT_MODEL = CURRENT_CONFIG["text_model"]
 VISION_MODEL = CURRENT_CONFIG["vision_model"]
+OLLAMA_HOST = CURRENT_CONFIG["host"]
+client = ollama.Client(host=OLLAMA_HOST)
 
 def resolve_input_device(config):
     requested = config.get("input_device")
@@ -308,7 +318,7 @@ class BotGUI:
         self.save_chat_history()
         
         try:
-            ollama.generate(model=TEXT_MODEL, prompt="", keep_alive=0)
+            client.generate(model=TEXT_MODEL, prompt="", keep_alive=0)
         except: pass
         try:
             sd.stop()
@@ -556,7 +566,7 @@ class BotGUI:
     def warm_up_logic(self):
         self.set_state(BotStates.WARMUP, "Warming up brains...")
         try:
-            ollama.generate(model=TEXT_MODEL, prompt="", keep_alive=-1)
+            client.generate(model=TEXT_MODEL, prompt="", keep_alive=-1)
         except Exception as e:
             print(f"Failed to load {TEXT_MODEL}: {e}", flush=True)
         self.play_sound(self.get_random_sound(greeting_sounds_dir))
@@ -835,7 +845,7 @@ class BotGUI:
         sentence_buffer = "" 
         
         try:
-            stream = ollama.chat(model=model_to_use, messages=messages, stream=True, options=OLLAMA_OPTIONS)
+            stream = client.chat(model=model_to_use, messages=messages, stream=True, options=OLLAMA_OPTIONS)
             
             is_action_mode = False
             
@@ -921,7 +931,7 @@ class BotGUI:
                         self.set_state(BotStates.THINKING, "Reading...")
                         self.thinking_sound_active.set()
                         
-                        final_resp = ollama.chat(model=model_to_use, messages=summary_prompt, stream=False, options=OLLAMA_OPTIONS)
+                        final_resp = client.chat(model=model_to_use, messages=summary_prompt, stream=False, options=OLLAMA_OPTIONS)
                         final_text = final_resp['message']['content']
                         
                         self.thinking_sound_active.clear()
