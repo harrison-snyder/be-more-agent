@@ -36,16 +36,22 @@ if [ "$ARCH" == "aarch64" ]; then
     wget -O piper.tar.gz https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_aarch64.tar.gz
     tar -xvf piper.tar.gz -C piper --strip-components=1
     rm piper.tar.gz
+elif [ "$ARCH" == "x86_64" ]; then
+    echo -e "${YELLOW}Detected x86_64 (Ubuntu). Downloading Piper for x86_64...${NC}"
+    wget -O piper.tar.gz https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz
+    tar -xvf piper.tar.gz -C piper --strip-components=1
+    rm piper.tar.gz
 else
-    echo -e "${RED}⚠️  Not on Raspberry Pi (aarch64). Skipping Piper download.${NC}"
+    echo -e "${RED}⚠️  Unknown architecture: $ARCH. Skipping Piper download.${NC}"
 fi
 
 # 4. Download Voice Models
 echo -e "${YELLOW}[4/6] Downloading Voice Models...${NC}"
-# Download default Piper voice as fallback
 cd piper
-wget -nc -O en_GB-semaine-medium.onnx https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_GB/semaine/medium/en_GB-semaine-medium.onnx
-wget -nc -O en_GB-semaine-medium.onnx.json https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_GB/semaine/medium/en_GB-semaine-medium.onnx.json
+wget -nc -O en_GB-semaine-medium.onnx \
+    https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_GB/semaine/medium/en_GB-semaine-medium.onnx
+wget -nc -O en_GB-semaine-medium.onnx.json \
+    https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_GB/semaine/medium/en_GB-semaine-medium.onnx.json
 cd ..
 
 # Download Custom BMO Voice
@@ -66,13 +72,13 @@ pip install --force-reinstall --no-cache-dir sounddevice
 pip install -r requirements.txt
 
 # 6. Pull AI Models
-echo -e "${YELLOW}[6/6] Checking AI Models...${NC}"
-if command -v ollama &> /dev/null; then
-    ollama pull gemma3:1b
-    ollama pull moondream
-else
-    echo -e "${RED}❌ Ollama not found. Please install it manually.${NC}"
-fi
+#echo -e "${YELLOW}[6/6] Checking AI Models...${NC}"
+#if command -v ollama &> /dev/null; then
+#    ollama pull gemma3:1b
+#    ollama pull moondream
+#else
+#   echo -e "${RED}❌ Ollama not found. Please install it manually.${NC}"
+#fi
 
 # 7. OpenWakeWord Model (Added this back so the user has a default)
 if [ ! -f "wakeword.onnx" ]; then

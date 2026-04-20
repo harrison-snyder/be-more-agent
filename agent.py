@@ -62,12 +62,14 @@ WAKE_WORD_THRESHOLD = 0.5
 # HARDWARE SETTINGS
 INPUT_DEVICE_NAME = None
 
-remote_ip = os.getenv("OLLAMA_REMOTE_IP", "127.0.0.1")
+load_dotenv()
+
+remote_ip = os.getenv("OLLAMA_HOST_IP", "127.0.0.1")
 ollama_host = f"http://{remote_ip}:11434"
 
 
 DEFAULT_CONFIG = {
-    "text_model": "gemma3:1b",
+    "text_model": "gemma4:e4b",
     "vision_model": "moondream",
     "voice_model": "piper/en_GB-semaine-medium.onnx",
     "host": ollama_host,
@@ -686,13 +688,15 @@ class BotGUI:
                     
                     # Debug volume occasionally
                     current_max = np.max(np.abs(audio_data))
-                    
+                    # Always print volume so we can debug mic input
+                    print(f"\r[VOL] {current_max}   ", end="", flush=True)
+
                     # Only predict if volume is significant to save CPU
                     if current_max > 200: 
                         prediction = self.oww_model.predict(audio_data)
                         for mdl in self.oww_model.prediction_buffer.keys():
                             score = list(self.oww_model.prediction_buffer[mdl])[-1]
-                            if score > 0.1: # Show potential triggers
+                            if score > 0.01: # Show potential triggers
                                 print(f"\r[Oww] Score: {score:.3f} | Vol: {current_max}   ", end="", flush=True)
 
                             if score > WAKE_WORD_THRESHOLD:
