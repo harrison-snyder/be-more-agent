@@ -68,11 +68,11 @@ I have a clone, so I am not sure it will be the same.
 * **This will completley wipe the sd card you are using**
 
 1. ssh into your device by enabling remote services (may be some extra steps to get ssh working). the default user:ark and password:ark
-2. find your sd card and reformat it to ext4 so linux can have a nice and easy time:
+2. Find your sd card and reformat it to ext4 so linux can have a nice and easy time:
     ```bash
     df -h
     ```
-    * make sure to find the right one (mine was /dev/mmcblk2p1) 
+   Make sure to find the right one (mine was /dev/mmcblk2p1) 
    ```bash
    sudo umount /dev/mmcblk2p1  #or your card directory if different
    sudo mkfs.ext4 /dev/mmcblk2p1  #this wipes and reformates it
@@ -84,6 +84,20 @@ I have a clone, so I am not sure it will be the same.
    mkdir bmoTing
    cd bmoTing
     ```
+3. You probably do not have an updated version of python so lets fix that. I needed to put it on the second sd card so it is a little involved. You do not need to do this if you have another way of getting a new python version. I just didnt want to screw the rest of the system up. 
+   ```bash
+    cd /roms
+    wget https://github.com/indygreg/python-build-standalone/releases/download/20240415/cpython-3.11.9+20240415-aarch64-unknown-linux-gnu-install_only.tar.gz
+    tar -xzf cpython-3.11.9+20240415-aarch64-unknown-linux-gnu-install_only.tar.gz
+    rm cpython-3.11.9+20240415-aarch64-unknown-linux-gnu-install_only.tar.gz
+    ```
+   Then we have to use it:
+   ```bash
+   /roms/python/bin/python3 -m venv /roms/veno
+   source /roms/veno/bin/activate
+   
+   ```
+   
 what follows should be the same as long as you are running some linux system.
 
 ### 1. Prerequisites
